@@ -33,25 +33,25 @@ namespace DOM {
 
 GestureRecognizer::GestureRecognizer(Element* element): _element(element)
 {
-    ofAddListener(_element->pointerDown.event(), this, &GestureRecognizer::onPointerEvent);
+	ofAddListener(_element->pointerDown.event(), this, &GestureRecognizer::onPointerEvent);
 }
 
 
 GestureRecognizer::~GestureRecognizer()
 {
-    ofRemoveListener(_element->pointerDown.event(), this, &GestureRecognizer::onPointerEvent);
+	ofRemoveListener(_element->pointerDown.event(), this, &GestureRecognizer::onPointerEvent);
 }
 
 
 GestureRecognizer::State GestureRecognizer::state() const
 {
-    return _state;
+	return _state;
 }
 
 
 void GestureRecognizer::reset()
 {
-    // reset
+	// reset
 }
 
 
