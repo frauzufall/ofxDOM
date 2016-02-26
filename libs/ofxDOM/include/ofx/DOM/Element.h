@@ -381,22 +381,22 @@ public:
 	/// \returns The height of the Element.
 	float getHeight() const;
 
-	/// \brief Get the geometry of the Element in its parent coordinates.
-	/// \returns the Geometry of the Element in its parent coordinates.
-	Geometry getGeometry() const;
+	/// \brief Get the shape of the Element in its parent coordinates.
+	/// \returns the Shape of the Element in its parent coordinates.
+	Shape getShape() const;
 
-	/// \brief Set the geometry of the Element in its parent coordinates.
-	/// \param geometry The new geometry of the Element in its parent coordinates.
-	void setGeometry(const Geometry& geometry);
+	/// \brief Set the shape of the Element in its parent coordinates.
+	/// \param shape The new shape of the Element in its parent coordinates.
+	void setShape(const Shape& shape);
 
 	/// \brief Get the bounding box representing all child elements.
 	/// \returns the bounding box representing all child elements, or
 	/// a rectangle of zero width and height at the origin if no children.
-	Geometry getChildGeometry() const;
+	Shape getChildShape() const;
 
-	/// \brief Get the bounding box representing the union of the child geometry and the element geometry.
-	/// \returns the bounding box representing the union of the child geometry and the element geometry.
-	Geometry getTotalGeometry() const;
+	/// \brief Get the bounding box representing the union of the child shape and the element shape.
+	/// \returns the bounding box representing the union of the child shape and the element shape.
+	Shape getTotalShape() const;
 
 	/// \brief Get the id of this Element.
 	///
@@ -529,8 +529,8 @@ protected:
 	/// \returns a reference to all pointers captured by this Element.
 	const std::vector<CapturedPointer>& capturedPointers() const;
 
-	/// \brief Called internally to invalidate the child geometry tree.
-	virtual void invalidateChildGeometry() const;
+	/// \brief Called internally to invalidate the child shape tree.
+	virtual void invalidateChildShape() const;
 
 	/// \brief Set if the pointer is implicitly captured on pointer down.
 	///
@@ -560,16 +560,16 @@ private:
 	/// \brief The id for this element.
 	std::string _id;
 
-	/// \brief The basic geometry of this element.
-	Geometry _geometry;
+	/// \brief The basic shape of this element.
+	Shape _shape;
 
-	/// \brief The union of all child geometries.
-	mutable Geometry _childGeometry;
+	/// \brief The union of all child shapes.
+	mutable Shape _childShape;
 
 	/// \brief True if the child geometry is invalid.
 	///
 	/// This variable usually set by callbacks from the child elements.
-	mutable bool _childGeometryInvalid = true;
+	mutable bool _childShapeInvalid = true;
 
 	/// \brief The enabled state of this Element.
 	bool _enabled = true;
@@ -633,8 +633,8 @@ ElementType* Element::addChild(std::unique_ptr<ElementType> element)
 		// Take ownership of the node.
 		_children.push_back(std::move(element));
 
-		// Invalidate all cached child geometry.
-		invalidateChildGeometry();
+		// Invalidate all cached child shape.
+		invalidateChildShape();
 
 		// Alert the node that its parent was set.
 		ElementEventArgs addedEvent(this);
@@ -733,8 +733,8 @@ LayoutType* Element::setLayout(std::unique_ptr<LayoutType> layout)
 		// Take ownership of the layout.
 		_layout = std::move(layout);
 
-		// Invalidate all cached child geometry.
-		invalidateChildGeometry();
+		// Invalidate all cached child shape.
+		invalidateChildShape();
 
 		return pLayout;
 	}
