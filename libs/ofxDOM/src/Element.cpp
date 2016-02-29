@@ -45,7 +45,8 @@ Element::Element(const std::string& id,
 				 float width,
 				 float height):
 	_id(id),
-	_shape(x, y, width, height)
+	_shape(x, y, width, height),
+	needsRedraw(true)
 {
 }
 
@@ -727,7 +728,11 @@ void Element::_draw(ofEventArgs& e)
 		ofTranslate(_shape.getPosition());
 
 		// Draw parent behind children.
-		onDraw();
+		if(needsRedraw){
+			generateDraw();
+			needsRedraw = false;
+		}
+		render();
 
 		// Now draw in reverse order.
 		auto iter = _children.rbegin();
@@ -743,6 +748,9 @@ void Element::_draw(ofEventArgs& e)
 	}
 }
 
+void Element::setNeedsRedraw(){
+	needsRedraw = true;
+}
 
 void Element::_exit(ofEventArgs& e)
 {

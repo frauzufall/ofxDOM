@@ -498,6 +498,15 @@ protected:
 	/// \param e The event data.
 	void _draw(ofEventArgs& e);
 
+	/// \brief Render method to draw content on screen
+	virtual void render() = 0;
+
+	/// \brief A method to call generateDraw() next time before the object is rendered
+	void setNeedsRedraw();
+
+	/// \brief A method to generate the content drawn by render()
+	virtual void generateDraw() = 0;
+
 	/// \brief Exit method called by parent Element.
 	/// \param e The event data.
 	void _exit(ofEventArgs& e);
@@ -593,6 +602,9 @@ private:
 
 	/// \brief Automatically capture the pointer on pointer down.
 	bool _implicitPointerCapture = false;
+
+	/// \brief True if content drawn by render() needs to be regenerated
+	bool needsRedraw;
 
 	/// \brief A list of the pointer ids currently captured by this Element.
 	/// Captured pointers are pushed back, so the pointer at the front was the

@@ -174,10 +174,6 @@ public:
 	{
 	}
 
-	virtual void onDraw() const
-	{
-	}
-
 	virtual void onExit()
 	{
 	}
