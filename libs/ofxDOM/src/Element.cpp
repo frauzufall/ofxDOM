@@ -601,6 +601,10 @@ void Element::setShape(const Shape& shape)
 	setSize(shape.width, shape.height);
 }
 
+void Element::setShape(float x, float y, float width, float height)
+{
+	setShape(ofRectangle(x, y, width, height));
+}
 
 Shape Element::getChildShape() const
 {

@@ -389,6 +389,13 @@ public:
 	/// \param shape The new shape of the Element in its parent coordinates.
 	void setShape(const Shape& shape);
 
+	/// \brief Set the shape of the Element in its parent coordinates.
+	/// \param x The new horizontal position of the Element in its parent coordinates.
+	/// \param y The new vertical position of the Element in its parent coordinates.
+	/// \param width The new width of the Element in its parent coordinates.
+	/// \param height The new height of the Element in its parent coordinates.
+	void setShape(float x, float y, float width, float height);
+
 	/// \brief Get the bounding box representing all child elements.
 	/// \returns the bounding box representing all child elements, or
 	/// a rectangle of zero width and height at the origin if no children.
