@@ -107,6 +107,16 @@ std::unique_ptr<Element> Element::removeChild(Element* element)
 	}
 }
 
+void Element::clear()
+{
+	// TODO this may not be the right way to do it.
+	while(children().size() > 0) {
+		if(!removeChild(children().at(0))){
+			ofLogError() << "Could not remove child";
+			return;
+		}
+	}
+}
 
 void Element::moveToFront()
 {
