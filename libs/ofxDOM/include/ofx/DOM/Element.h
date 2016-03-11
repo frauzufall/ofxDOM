@@ -95,13 +95,13 @@ public:
 	/// ownership of the pointer via a std::unique_ptr.
 	/// \tparam ElementType The Element Type.
 	template <typename ElementType>
-	ElementType* addChild(std::unique_ptr<ElementType> element);
+	ElementType* add(std::unique_ptr<ElementType> element);
 
 	/// \brief Create a child using a templated Element type.
 	///
 	/// To create a child Element you can use this method like:
 	///
-	/// ElementType* element = parentElement->addChild<ElementType>(arguments ...);
+	/// ElementType* element = parentElement->add<ElementType>(arguments ...);
 	///
 	/// \tparam ElementType The subclass of Element that will be added.
 	/// \tparam Args The variable constructor arguments for the ElementType.
@@ -111,12 +111,15 @@ public:
 	/// \tparam ElementType The Element Type.
 	/// \tparam Args the ElementType constructor arguments.
 	template <typename ElementType, typename... Args>
-	ElementType* addChild(Args&&... args);
+	ElementType* add(Args&&... args);
 
 	/// \brief Release ownership of a child Element.
 	/// \param element The Element to release.
 	/// \returns a std::unique_ptr<Element> to the child.
 	std::unique_ptr<Element> removeChild(Element* element);
+
+	/// \brief Removes all child elements.
+	void clear();
 
 	/// \brief Move this Element in front of all of its siblings.
 	void moveToFront();
@@ -630,14 +633,14 @@ private:
 
 
 template <typename ElementType, typename... Args>
-ElementType* Element::addChild(Args&&... args)
+ElementType* Element::add(Args&&... args)
 {
-	return addChild(std::make_unique<ElementType>(std::forward<Args>(args)...));
+	return add(std::make_unique<ElementType>(std::forward<Args>(args)...));
 }
 
 
 template <typename ElementType>
-ElementType* Element::addChild(std::unique_ptr<ElementType> element)
+ElementType* Element::add(std::unique_ptr<ElementType> element)
 {
 	static_assert(std::is_base_of<Element, ElementType>(), "ElementType must be an Element or derived from Element.");
 
