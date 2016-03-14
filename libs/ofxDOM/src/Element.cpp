@@ -48,6 +48,8 @@ Element::Element(const std::string& id,
 	_shape(x, y, width, height),
 	needsRedraw(true)
 {
+	ofAddListener(this->move, this, &Element::_onMoved);
+	ofAddListener(this->resize, this, &Element::_onResized);
 }
 
 
@@ -109,10 +111,9 @@ std::unique_ptr<Element> Element::removeChild(Element* element)
 
 void Element::clear()
 {
-	// TODO this may not be the right way to do it.
 	while(children().size() > 0) {
 		if(!removeChild(children().at(0))){
-			ofLogError() << "Could not remove child";
+			ofLogError("Element::clear") << "Could not remove child";
 			return;
 		}
 	}
@@ -464,6 +465,13 @@ const Document* Element::document() const
 	}
 }
 
+std::unique_ptr<Layout> Element::removeLayout(){
+	// TODO
+}
+
+Layout* Element::layout(){
+	return _layout.get();
+}
 
 bool Element::hitTest(const Position& parentPosition) const
 {
@@ -479,7 +487,7 @@ bool Element::childHitTest(const Position& localPosition) const
 
 Position Element::localToScreen(const Position& localPosition) const
 {
-	return localPosition + getScreenPosition();;
+	return localPosition + getScreenPosition();
 }
 
 
@@ -588,9 +596,33 @@ Size Element::getSize() const
 }
 
 
+///\todo use ofCompareFloat
+void Element::setWidth(float width)
+{
+	if(width != getWidth()){
+		_shape.setWidth(width);
+		_shape.standardize();
+		ResizeEventArgs e(_shape);
+		ofNotifyEvent(resize, e, this);
+	}
+}
+
+
 float Element::getWidth() const
 {
 	return _shape.getWidth();
+}
+
+
+///\todo use ofCompareFloat
+void Element::setHeight(float height)
+{
+	if(height != getHeight()){
+		_shape.setHeight(height);
+		_shape.standardize();
+		ResizeEventArgs e(_shape);
+		ofNotifyEvent(resize, e, this);
+	}
 }
 
 
@@ -758,7 +790,8 @@ void Element::_draw(ofEventArgs& e)
 	}
 }
 
-void Element::setNeedsRedraw(){
+void Element::setNeedsRedraw()
+{
 	needsRedraw = true;
 }
 
@@ -942,6 +975,19 @@ void Element::setImplicitPointerCapture(bool implicitPointerCapture)
 bool Element::getImplicitPointerCapture() const
 {
 	return _implicitPointerCapture;
+}
+
+void Element::_onMoved(MoveEventArgs&)
+{
+	invalidateChildShape();
+	setNeedsRedraw();
+}
+
+
+void Element::_onResized(ResizeEventArgs&)
+{
+	invalidateChildShape();
+	setNeedsRedraw();
 }
 
 

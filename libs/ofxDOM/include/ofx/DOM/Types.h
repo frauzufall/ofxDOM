@@ -67,6 +67,16 @@ enum class Orientation
 	DEFAULT
 };
 
+/// \brief The float of a gui element in a layout.
+enum class LayoutFloat {
+	/// \brief Left float.
+	LEFT,
+	/// \brief Right float.
+	RIGHT,
+	/// \brief No float.
+	NONE
+};
+
 template <class T>
 using StorageType = typename decay<T>::type;
 

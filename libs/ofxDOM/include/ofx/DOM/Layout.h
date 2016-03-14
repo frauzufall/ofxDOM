@@ -52,6 +52,10 @@ public:
 	/// \brief Destroy the layout.
 	virtual ~Layout();
 
+	/// \brief Set layout attributes via JSON
+	/// \param config the JSON data
+	virtual void processConfig(const ofJson & config);
+
 	/// \returns a pointer to the parent Element or nullptr if none.
 	Element* parent();
 

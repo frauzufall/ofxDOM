@@ -42,6 +42,11 @@ Layout::~Layout()
 }
 
 
+void Layout::processConfig(const ofJson & config)
+{
+}
+
+
 Element* Layout::parent()
 {
 	return _parent;

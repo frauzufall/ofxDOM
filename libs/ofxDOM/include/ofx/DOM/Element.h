@@ -119,7 +119,7 @@ public:
 	std::unique_ptr<Element> removeChild(Element* element);
 
 	/// \brief Removes all child elements.
-	void clear();
+	virtual void clear();
 
 	/// \brief Move this Element in front of all of its siblings.
 	void moveToFront();
@@ -376,9 +376,17 @@ public:
 	/// \returns the Size of the Element.
 	Size getSize() const;
 
+	/// \brief Set the width of the Element.
+	/// param width The new width of the Element.
+	void setWidth(float width);
+
 	/// \brief Get the width of the Element.
 	/// \returns The width of the Element.
 	float getWidth() const;
+
+	/// \brief Set the height of the Element.
+	/// param height The new height of the Element.
+	void setHeight(float height);
 
 	/// \brief Get the height of the Element.
 	/// \returns The height of the Element.
@@ -435,7 +443,7 @@ public:
 	/// \param inherit True if the Element should query its ancestors for the attribute.
 	/// \returns The value corresponding to the key, or throws an exception.
 	template <typename AnyType>
-	AnyType getAttribute(const std::string& key, bool inherit = false) const;
+	AnyType getAttribute(const std::string& key, bool inherit = false);
 
 	/// \brief Set a value for a named attribute.
 	///
@@ -502,13 +510,13 @@ protected:
 	void _draw(ofEventArgs& e);
 
 	/// \brief Render method to draw content on screen
-	virtual void render() = 0;
+	virtual void render(){}
 
 	/// \brief A method to call generateDraw() next time before the object is rendered
 	void setNeedsRedraw();
 
 	/// \brief A method to generate the content drawn by render()
-	virtual void generateDraw() = 0;
+	virtual void generateDraw(){}
 
 	/// \brief Exit method called by parent Element.
 	/// \param e The event data.
@@ -569,6 +577,12 @@ private:
 
 	/// \brief Non copyable.
 	Element& operator = (const Element&) = delete;
+
+	/// \brief A callback for to notify of Element movement
+	void _onMoved(MoveEventArgs&);
+
+	/// \brief A callback to notify of Elements size changes
+	void _onResized(ResizeEventArgs&);
 
 	/// \brief A callback for child Elements to notify their parent of movement.
 	void _onChildMoved(MoveEventArgs&);
@@ -768,7 +782,7 @@ LayoutType* Element::setLayout(std::unique_ptr<LayoutType> layout)
 
 
 template <typename AnyType>
-AnyType Element::getAttribute(const std::string& key, bool inherit) const
+AnyType Element::getAttribute(const std::string& key, bool inherit)
 {
 	auto iter = _attributes.find(key);
 
