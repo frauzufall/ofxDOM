@@ -895,6 +895,9 @@ void Element::setEnabled(bool enabled_)
 
 bool Element::isHidden() const
 {
+	if(parent()){
+		return parent()->isHidden() || _hidden;
+	}
 	return _hidden;
 }
 
@@ -902,6 +905,7 @@ bool Element::isHidden() const
 void Element::setHidden(bool hidden_)
 {
 	_hidden = hidden_;
+	invalidateChildShape();
 	EnablerEventArgs e(_hidden);
 	ofNotifyEvent(hidden, e, this);
 }

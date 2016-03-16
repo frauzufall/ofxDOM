@@ -42,11 +42,6 @@ Layout::~Layout()
 }
 
 
-void Layout::processConfig(const ofJson & config)
-{
-}
-
-
 Element* Layout::parent()
 {
 	return _parent;
@@ -118,6 +113,8 @@ void BoxLayout::doLayout()
 			}
 		}
 
+		totalWidth = std::max(totalWidth, _parent->getShape().getWidth());
+		totalHeight = std::max(totalHeight, _parent->getShape().getHeight());
 		_parent->setSize(totalWidth, totalHeight);
 
 		_isDoingLayout = false;
