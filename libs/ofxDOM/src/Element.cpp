@@ -592,11 +592,14 @@ float Element::getScreenY() const
 
 void Element::setSize(float width, float height)
 {
-	_shape.setWidth(width);
-	_shape.setHeight(height);
-	_shape.standardize();
-	ResizeEventArgs e(_shape);
-	ofNotifyEvent(resize, e, this);
+	if(_shape.getWidth()!= width || _shape.getHeight() != height)
+	{
+		_shape.setWidth(width);
+		_shape.setHeight(height);
+		_shape.standardize();
+		ResizeEventArgs e(_shape);
+		ofNotifyEvent(resize, e, this);
+	}
 }
 
 
