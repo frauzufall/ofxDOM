@@ -532,9 +532,12 @@ Position Element::screenToParent(const Position& screenPosition) const
 
 void Element::setPosition(float x, float y)
 {
-	_shape.setPosition(x, y);
-	MoveEventArgs e(getPosition());
-	ofNotifyEvent(move, e, this);
+	if(_shape.getPosition() != ofPoint(x,y))
+	{
+		_shape.setPosition(x, y);
+		MoveEventArgs e(getPosition(), this);
+		ofNotifyEvent(move, e, this);
+	}
 }
 
 
@@ -1002,9 +1005,10 @@ void Element::_onResized(ResizeEventArgs&)
 }
 
 
-void Element::_onChildMoved(MoveEventArgs&)
+void Element::_onChildMoved(MoveEventArgs &args)
 {
 	invalidateChildShape();
+	ofNotifyEvent(childMoved, args, this);
 }
 
 

@@ -413,27 +413,28 @@ private:
 class MoveEventArgs
 {
 public:
-	MoveEventArgs(const Position& position);
+	MoveEventArgs(const Position& position, Element* element);
 	virtual ~MoveEventArgs();
 
 	const Position& position() const;
+	Element* element();
 
 protected:
 	Position _position;
+	Element* _element;
 
 };
-
 
 class ResizeEventArgs
 {
 public:
-	ResizeEventArgs(const Shape& geometry);
+	ResizeEventArgs(const Shape& shape);
 	virtual ~ResizeEventArgs();
 
-	const Shape& geometry() const;
+	const Shape& shape() const;
 
 protected:
-	Shape _geometry;
+	Shape _shape;
 
 };
 

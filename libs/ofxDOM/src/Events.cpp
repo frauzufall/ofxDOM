@@ -356,7 +356,8 @@ FocusEventArgs::~FocusEventArgs()
 }
 
 
-MoveEventArgs::MoveEventArgs(const Position& position):
+MoveEventArgs::MoveEventArgs(const Position& position, Element *element):
+	_element(element),
 	_position(position)
 {
 }
@@ -373,8 +374,14 @@ const Position& MoveEventArgs::position() const
 }
 
 
-ResizeEventArgs::ResizeEventArgs(const Shape& geometry):
-	_geometry(geometry)
+Element* MoveEventArgs::element()
+{
+	return _element;
+}
+
+
+ResizeEventArgs::ResizeEventArgs(const Shape& shape):
+	_shape(shape)
 {
 }
 
@@ -384,9 +391,9 @@ ResizeEventArgs::~ResizeEventArgs()
 }
 
 
-const Shape& ResizeEventArgs::geometry() const
+const Shape& ResizeEventArgs::shape() const
 {
-	return _geometry;
+	return _shape;
 }
 
 

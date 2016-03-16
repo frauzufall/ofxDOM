@@ -594,7 +594,7 @@ private:
 	void _onResized(ResizeEventArgs&);
 
 	/// \brief A callback for child Elements to notify their parent of movement.
-	void _onChildMoved(MoveEventArgs&);
+	void _onChildMoved(MoveEventArgs &args);
 
 	/// \brief A callback for child Elements to notify their parent size changes.
 	void _onChildResized(ResizeEventArgs&);

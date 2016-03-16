@@ -210,6 +210,7 @@ public:
 	ofEvent<ElementEventArgs> childAdded;
 	ofEvent<ElementEventArgs> childRemoved;
 	ofEvent<ElementOrderEventArgs> childReordered;
+	ofEvent<MoveEventArgs> childMoved;
 
 	ofEvent<MoveEventArgs> move;
 	ofEvent<ResizeEventArgs> resize;
