@@ -491,6 +491,13 @@ Position Element::localToScreen(const Position& localPosition) const
 }
 
 
+Shape Element::localToScreen(const Shape& localShape) const
+{
+	return Shape(localShape.getPosition() + getScreenPosition(),
+				 localShape.getWidth(), localShape.getHeight());
+}
+
+
 Position Element::screenToLocal(const Position& screenPosition) const
 {
 	return screenPosition - getScreenPosition();

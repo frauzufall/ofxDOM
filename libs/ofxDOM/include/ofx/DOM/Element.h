@@ -310,6 +310,15 @@ public:
 	/// \returns the position converted from local to screen coordinates.
 	Position localToScreen(const Position& localPosition) const;
 
+	/// \brief Convert the local coordinates to screen coordinates.
+	///
+	/// Local coordinates are defined with reference to the position of the box.
+	/// The Position of this element will be in its parent's local coordinates.
+	///
+	/// \param localShape The local shape to convert.
+	/// \returns the shape converted from local to screen coordinates.
+	Shape localToScreen(const Shape& localShape) const;
+
 	/// \brief Convert the screen coordinates to local coordinates.
 	///
 	/// Local coordinates are defined with reference to the position of the box.
