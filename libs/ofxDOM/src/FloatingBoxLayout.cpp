@@ -46,7 +46,6 @@ void FloatingBoxLayout::doLayout(){
 
 							case LayoutFloat::RIGHT: {
 
-								// TODO
 								setNextRightFloatPosition(ofPoint(_parent->getWidth()-element->getWidth(),0), element);
 
 								break;
@@ -84,18 +83,19 @@ void FloatingBoxLayout::doLayout(){
 ///\brief floating layout based on https://www.w3.org/TR/CSS2/visuren.html#float-rules
 void FloatingBoxLayout::setNextLeftFloatPosition(ofPoint p, Element* e){
 
-	nextLeftFloatPositionLoop(e, p);
-
+	p = nextLeftFloatPositionLoop(e, e, p);
 	e->setPosition(p);
 
 }
 
-void FloatingBoxLayout::nextLeftFloatPositionLoop(Element* e, ofPoint& res){
+ofPoint FloatingBoxLayout::nextLeftFloatPositionLoop(Element* e, Element* s, const ofPoint& pos){
+
+	ofPoint res = pos;
 
 	for (Element* sibling: children()){
 
-		if(sibling == e){
-			return;
+		if(sibling == s){
+			return res;
 		}
 
 		if(sibling){
@@ -106,6 +106,13 @@ void FloatingBoxLayout::nextLeftFloatPositionLoop(Element* e, ofPoint& res){
 				float s_bottom = sibling->getShape().getBottom();
 				float s_right = sibling->getShape().getRight();
 				float s_left = sibling->getShape().getLeft();
+
+				//rule 5, rule 6
+				if(res.y < s_top){
+					res.y = s_top;
+					res.x = 0;
+					res = nextLeftFloatPositionLoop(e, sibling, res);
+				}
 
 				if(sibling->hasAttribute("float")){
 
@@ -120,21 +127,32 @@ void FloatingBoxLayout::nextLeftFloatPositionLoop(Element* e, ofPoint& res){
 							//rule 2, rule 7, rule 3
 							if((res.x < s_right) && (res.y < s_bottom)){
 
-								//trying to align element on the right side
-								//check if there is a right floating sibling in the way
-								ofPoint alignright = res;
-								alignright.x = s_right;
+								//trying to align element on the right side of the sibling
 
-								if(s_right + e->getWidth() < _parent->getWidth()
-										&& checkForIntersections(alignright, e, LayoutFloat::RIGHT)){
-									res.x = s_right;
-									nextLeftFloatPositionLoop(e, res);
+								ofPoint moveRight(s_right, res.y);
+								ofPoint moveDown(0, s_bottom);
+
+								if(s_right + e->getWidth() < _parent->getWidth()){
+									moveRight = nextLeftFloatPositionLoop(e, sibling, moveRight);
+									moveDown = nextLeftFloatPositionLoop(e, sibling, moveDown);
+									if(moveRight.y > moveDown.y){
+										res = moveDown;
+									}else {
+										if(moveRight.y == moveDown.y){
+											if(moveRight.x > moveDown.x){
+												res = moveDown;
+											}else{
+												res = moveRight;
+											}
+										}else {
+											res = moveRight;
+										}
+									}
 								}
 								else {
 									//does not fit to the right, move to next most left place
-									res.y = s_bottom;
-									res.x = 0;
-									nextLeftFloatPositionLoop(e, res);
+									res = moveDown;
+									res = nextLeftFloatPositionLoop(e, sibling, res);
 								}
 							}
 							break;
@@ -143,9 +161,11 @@ void FloatingBoxLayout::nextLeftFloatPositionLoop(Element* e, ofPoint& res){
 						case LayoutFloat::RIGHT: {
 
 							//rule 3
-							if(res.x == 0 && s_left < res.x + e->getWidth() && res.y < s_bottom){
+							if(s_left < res.x + e->getWidth() && res.y < s_bottom){
 								//does not fit next to right floating sibling, move to the bottom of sibling
 								res.y = s_bottom;
+								res.x = 0;
+								res = nextLeftFloatPositionLoop(e, sibling, res);
 							}
 
 							break;
@@ -154,32 +174,27 @@ void FloatingBoxLayout::nextLeftFloatPositionLoop(Element* e, ofPoint& res){
 					}
 
 				}
-
-				//rule 5, rule 6
-				if(res.y < s_top){
-					res.y = s_top;
-					nextLeftFloatPositionLoop(e, res);
-				}
-
 			}
 		}
 	}
+	return res;
 }
 
 void FloatingBoxLayout::setNextRightFloatPosition(ofPoint p, Element* e){
 
-	nextRightFloatPositionLoop(e, p);
-
+	p = nextRightFloatPositionLoop(e, e, p);
 	e->setPosition(p);
 
 }
 
-void FloatingBoxLayout::nextRightFloatPositionLoop(Element* e, ofPoint& res){
+ofPoint FloatingBoxLayout::nextRightFloatPositionLoop(Element* e, Element* s, const ofPoint& pos){
+
+	ofPoint res = pos;
 
 	for (Element* sibling: children()){
 
-		if(sibling == e){
-			return;
+		if(sibling == s){
+			return res;
 		}
 
 		if(sibling){
@@ -193,6 +208,13 @@ void FloatingBoxLayout::nextRightFloatPositionLoop(Element* e, ofPoint& res){
 				float s_right = sibling->getShape().getRight();
 				float s_left = sibling->getShape().getLeft();
 
+				//rule 5, rule 6
+				if(res.y < s_top){
+					res.y = s_top;
+					res.x = start_x;
+					res = nextRightFloatPositionLoop(e, sibling, res);
+				}
+
 				if(sibling->hasAttribute("float")){
 
 					LayoutFloat lf = sibling->getAttribute<LayoutFloat>("float");
@@ -204,22 +226,32 @@ void FloatingBoxLayout::nextRightFloatPositionLoop(Element* e, ofPoint& res){
 							//rule 2, rule 7, rule 3
 							if((res.x+e_width > s_left) && (res.y < s_bottom)){
 
-								//trying to align element on the right side
-								//check if there is a right floating sibling in the way
-								ofPoint alignright = res;
-								alignright.x = s_left-e_width;
+								//align element on the left side of the sibling
 
-								if(alignright.x >= 0
-										&& checkForIntersections(alignright, e, LayoutFloat::LEFT)
-										&& checkForIntersections(alignright, e, LayoutFloat::NONE)){
-									res.x = alignright.x;
-									nextRightFloatPositionLoop(e, res);
+								ofPoint moveLeft(s_left-e_width, res.y);
+								ofPoint moveDown(start_x, s_bottom);
+
+								if(moveLeft.x >= 0){
+									moveLeft = nextRightFloatPositionLoop(e, sibling, moveLeft);
+									moveDown = nextRightFloatPositionLoop(e, sibling, moveDown);
+									if(moveLeft.y > moveDown.y){
+										res = moveDown;
+									}else {
+										if(moveLeft.y == moveDown.y){
+											if(moveLeft.x < moveDown.x){
+												res = moveDown;
+											}else{
+												res = moveLeft;
+											}
+										}else {
+											res = moveLeft;
+										}
+									}
 								}
 								else {
-									//does not fit to the right, move to next most left place
-									res.y = s_bottom;
-									res.x = start_x;
-									nextRightFloatPositionLoop(e, res);
+									//does not fit to the left, move to next most right place
+									res = moveDown;
+									res = nextRightFloatPositionLoop(e, sibling, res);
 								}
 							}
 							break;
@@ -230,9 +262,11 @@ void FloatingBoxLayout::nextRightFloatPositionLoop(Element* e, ofPoint& res){
 						case LayoutFloat::LEFT: {
 
 							//rule 3
-							if(res.x == start_x && s_right > res.x && res.y < s_bottom){
+							if(s_right > res.x && res.y < s_bottom){
 								//does not fit next to left floating sibling, move to the bottom of sibling
 								res.y = s_bottom;
+								res.x = start_x;
+								res = nextRightFloatPositionLoop(e, sibling, res);
 							}
 
 							break;
@@ -242,46 +276,13 @@ void FloatingBoxLayout::nextRightFloatPositionLoop(Element* e, ofPoint& res){
 
 				}
 
-				//rule 5, rule 6
-				if(res.y < s_top){
-					res.y = s_top;
-					nextRightFloatPositionLoop(e, res);
-				}
-
 			}
 
 		}
 	}
+
+	return res;
+
 }
-
-bool FloatingBoxLayout::checkForIntersections(ofPoint pos, Element* e, LayoutFloat floatType){
-
-	for (Element* sibling : children()){
-
-		if(sibling == e){
-			return true;
-		}
-
-		if(sibling){
-
-			if(!sibling->isHidden()){
-				if(sibling->hasAttribute("float")){
-
-					if(sibling->getAttribute<LayoutFloat>("float") == floatType){
-
-						ofRectangle test(pos.x, pos.y, e->getWidth(), e->getHeight());
-						if(sibling->getShape().intersects(test)){
-							return false;
-						}
-
-					}
-				}
-			}
-
-		}
-	}
-	return true;
-}
-
 
 }} // namespace ofx::DOM

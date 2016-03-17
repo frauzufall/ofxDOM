@@ -22,9 +22,8 @@ protected:
 
 	void setNextLeftFloatPosition(ofPoint p, Element* e);
 	void setNextRightFloatPosition(ofPoint p, Element* e);
-	void nextLeftFloatPositionLoop(Element* e, ofPoint& res);
-	void nextRightFloatPositionLoop(Element* e, ofPoint& res);
-	bool checkForIntersections(ofPoint pos, Element* e, LayoutFloat floatType);
+	ofPoint nextLeftFloatPositionLoop(Element* e, Element *s, const ofPoint& res);
+	ofPoint nextRightFloatPositionLoop(Element* e, Element *s, const ofPoint& res);
 
 };
 
