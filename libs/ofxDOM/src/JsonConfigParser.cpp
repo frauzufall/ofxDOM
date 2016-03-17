@@ -148,6 +148,49 @@ bool JsonConfigParser::_parse(const ofJson &config, const string &name, LayoutFl
 	return false;
 }
 
+bool JsonConfigParser::parse(const ofJson &config, Element* val){
+
+	if(!config.is_null()){
+		if (config.find("left") != config.end()) {
+			ofJson left = config["left"];
+			if(left.is_number()){
+				val->setPosition(left, val->getPosition().y);
+			}
+		}
+		if (config.find("top") != config.end()) {
+			ofJson top = config["top"];
+			if(top.is_number()){
+				val->setPosition(val->getPosition().x, top);
+			}
+		}
+		if (config.find("width") != config.end()) {
+			ofJson width = config["width"];
+			if(width.is_number()){
+				val->setWidth(width);
+				val->setPercentalWidth(false);
+			}else {
+				if(ofSplitString(width, "%").size() > 0){
+					vector<std::string> _val = JsonConfigParser::getMatchedStrings(width, "(?:\\b|-)([1-9]{1,2}[0]?|100)\\b");
+					if(_val.size() > 0){
+						float res = ofToFloat(_val[0])/100.;
+						val->setPercentalWidth(true, res);
+						return true;
+					}
+				}
+			}
+		}
+		if (config.find("height") != config.end()) {
+			ofJson height = config["height"];
+			if(height.is_number()){
+				val->setHeight(height);
+				return true;
+			}
+		}
+	}
+	return false;
+
+}
+
 
 vector < string > JsonConfigParser::getMatchedStrings (string contents, string regex ){
 

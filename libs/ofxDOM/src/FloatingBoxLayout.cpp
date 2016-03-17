@@ -72,8 +72,11 @@ void FloatingBoxLayout::doLayout(){
 			}
 		}
 
-		totalWidth = std::max(totalWidth, _parent->getShape().getWidth());
-		_parent->setSize(totalWidth, totalHeight);
+		if(!_parent->usesPercentalWidth()){
+			totalWidth = std::max(totalWidth, _parent->getShape().getWidth());
+			_parent->setWidth(totalWidth);
+		}
+		_parent->setHeight(totalHeight);
 
 		_isDoingLayout = false;
 	}

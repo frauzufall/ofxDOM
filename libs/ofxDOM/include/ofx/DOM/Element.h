@@ -387,11 +387,21 @@ public:
 
 	/// \brief Set the width of the Element.
 	/// param width The new width of the Element.
-	void setWidth(float width);
+	virtual void setWidth(float width);
 
 	/// \brief Get the width of the Element.
 	/// \returns The width of the Element.
 	float getWidth() const;
+
+	/// \brief Get the percental width of the Element to the parent Element width.
+	/// \returns The percental width of the Element.
+	float getPercentalWidth() const;
+
+	/// \brief Get the usage of percental width.
+	bool usesPercentalWidth() const;
+
+	/// \brief Get the usage of percental width.
+	void setPercentalWidth(bool usePercentalWidth, float percentalWidthAmount=1);
 
 	/// \brief Set the height of the Element.
 	/// param height The new height of the Element.
@@ -605,6 +615,12 @@ private:
 	/// \brief The basic shape of this element.
 	Shape _shape;
 
+	/// \brief True if the element has a width percentally depending on the width of its parent.
+	bool _usePercentalWidth;
+
+	/// \brief The percental amount if the elements width to the width of its parent.
+	float _percentalWidthAmount;
+
 	/// \brief The union of all child shapes.
 	mutable Shape _childShape;
 
@@ -677,6 +693,10 @@ ElementType* Element::add(std::unique_ptr<ElementType> element)
 
 		// Take ownership of the node.
 		_children.push_back(std::move(element));
+
+		if(pNode->usesPercentalWidth() && pNode->getPercentalWidth() <= 1){
+			pNode->setWidth(getWidth()*pNode->getPercentalWidth());
+		}
 
 		// Invalidate all cached child shape.
 		invalidateChildShape();

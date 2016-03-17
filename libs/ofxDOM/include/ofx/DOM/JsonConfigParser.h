@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofx/DOM/Types.h"
+#include "ofx/DOM/Element.h"
 
 namespace ofx {
 namespace DOM {
@@ -33,6 +34,8 @@ class JsonConfigParser {
 			return false;
 		}
 
+		static bool parse(const ofJson &config, Element* val);
+
 		///\brief regex helper function copied from https://github.com/openframeworks/openFrameworks/issues/1110
 		static vector <std::string> getMatchedStrings (std::string contents, string regex);
 
@@ -63,7 +66,6 @@ class JsonConfigParser {
 		static bool _parse(const ofJson &config, const string& name, ofPoint& val);
 		static bool _parse(const ofJson &config, const string& name, ofRectangle& val);
 		static bool _parse(const ofJson &config, const string& name, LayoutFloat& val);
-
 
 		///\brief Default parse method for non implemented attribute types
 		template <typename AttributeType>

@@ -46,7 +46,9 @@ Element::Element(const std::string& id,
 				 float height):
 	_id(id),
 	_shape(x, y, width, height),
-	needsRedraw(true)
+	needsRedraw(true),
+	_percentalWidthAmount(1),
+	_usePercentalWidth(false)
 {
 	ofAddListener(this->move, this, &Element::_onMoved);
 	ofAddListener(this->resize, this, &Element::_onResized);
@@ -626,6 +628,25 @@ float Element::getWidth() const
 	return _shape.getWidth();
 }
 
+float Element::getPercentalWidth() const
+{
+	return _percentalWidthAmount;
+}
+
+bool Element::usesPercentalWidth() const
+{
+	return _usePercentalWidth;
+}
+
+void Element::setPercentalWidth(bool usePercentalWidth, float percentalWidthAmount)
+{
+	_usePercentalWidth = usePercentalWidth;
+	_percentalWidthAmount = percentalWidthAmount;
+	if(_usePercentalWidth && _percentalWidthAmount <= 1 && parent()){
+		setWidth(parent()->getWidth()*_percentalWidthAmount);
+	}
+}
+
 
 ///\todo use ofCompareFloat
 void Element::setHeight(float height)
@@ -1003,6 +1024,13 @@ void Element::_onMoved(MoveEventArgs&)
 
 void Element::_onResized(ResizeEventArgs&)
 {
+	// TODO performance optimization: check if mouse is dragged and update only on release
+	for(auto& e : children()){
+		if(e->usesPercentalWidth() && e->getPercentalWidth() <= 1){
+			e->setWidth(getWidth()*e->getPercentalWidth());
+		}
+	}
+
 	invalidateChildShape();
 	setNeedsRedraw();
 }
