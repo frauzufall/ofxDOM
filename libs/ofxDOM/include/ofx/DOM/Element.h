@@ -204,7 +204,7 @@ public:
 	/// The parent Element retains ownership.
 	///
 	/// \returns a list of pointers to child elements.
-	std::vector<Element*> children();
+	virtual std::vector<Element*> children();
 
 	/// \brief Get a list of pointers to the child elements.
 	///
@@ -379,7 +379,7 @@ public:
 	/// \brief Set the size of the Element.
 	/// \param width The new width of the Element.
 	/// \param height The new height of the Element.
-	void setSize(float width, float height);
+	virtual void setSize(float width, float height);
 
 	/// \brief Get the Size of the Element.
 	/// \returns the Size of the Element.
@@ -405,7 +405,7 @@ public:
 
 	/// \brief Set the height of the Element.
 	/// param height The new height of the Element.
-	void setHeight(float height);
+	virtual void setHeight(float height);
 
 	/// \brief Get the height of the Element.
 	/// \returns The height of the Element.
@@ -417,14 +417,14 @@ public:
 
 	/// \brief Set the shape of the Element in its parent coordinates.
 	/// \param shape The new shape of the Element in its parent coordinates.
-	void setShape(const Shape& shape);
+	virtual void setShape(const Shape& shape);
 
 	/// \brief Set the shape of the Element in its parent coordinates.
 	/// \param x The new horizontal position of the Element in its parent coordinates.
 	/// \param y The new vertical position of the Element in its parent coordinates.
 	/// \param width The new width of the Element in its parent coordinates.
 	/// \param height The new height of the Element in its parent coordinates.
-	void setShape(float x, float y, float width, float height);
+	virtual void setShape(float x, float y, float width, float height);
 
 	/// \brief Get the bounding box representing all child elements.
 	/// \returns the bounding box representing all child elements, or
@@ -590,6 +590,9 @@ protected:
 	/// \returns true iff implicit pointer capture is enabled.
 	bool getImplicitPointerCapture() const;
 
+	/// \brief A vector to Elements.
+	std::vector<std::unique_ptr<Element>> _children;
+
 private:
 	/// \brief Not construction-copyable.
 	Element(const Element& other) = delete; // non-construction-copyable
@@ -658,9 +661,6 @@ private:
 
 	/// \brief An optional pointer to a parent Node.
 	Element* _parent = nullptr;
-
-	/// \brief A vector to Elements.
-	std::vector<std::unique_ptr<Element>> _children;
 
 	/// \brief The Layout class has access to all private variables.
 	friend class Layout;
