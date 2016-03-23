@@ -178,19 +178,6 @@ public:
 	{
 	}
 
-	DOMEvent<PointerUIEventArgs> pointerOver;
-	DOMEvent<PointerUIEventArgs> pointerEnter;
-	DOMEvent<PointerUIEventArgs> pointerDown;
-	DOMEvent<PointerUIEventArgs> pointerMove;
-	DOMEvent<PointerUIEventArgs> pointerUp;
-	DOMEvent<PointerUIEventArgs> pointerCancel;
-	DOMEvent<PointerUIEventArgs> pointerOut;
-	DOMEvent<PointerUIEventArgs> pointerLeave;
-	DOMEvent<PointerUIEventArgs> pointerScroll;
-
-	DOMEvent<PointerCaptureUIEventArgs> gotPointerCapture;
-	DOMEvent<PointerCaptureUIEventArgs> lostPointerCapture;
-
 	DOMEvent<KeyboardUIEventArgs> keyDown;
 	DOMEvent<KeyboardUIEventArgs> keyUp;
 
@@ -239,18 +226,6 @@ EventTarget<EventTargetType>::EventTarget()
 
 	// theoretically not having any events registered woudl make isEventTypeRegistered much faster.
 	_eventRegistry = {
-		{ PointerEventArgs::POINTER_OVER, &pointerOver },
-		{ PointerEventArgs::POINTER_ENTER, &pointerEnter },
-		{ PointerEventArgs::POINTER_DOWN, &pointerDown },
-		{ PointerEventArgs::POINTER_MOVE, &pointerMove },
-		{ PointerEventArgs::POINTER_UP, &pointerUp },
-		{ PointerEventArgs::POINTER_CANCEL, &pointerCancel },
-		{ PointerEventArgs::POINTER_OUT, &pointerOut },
-		{ PointerEventArgs::POINTER_LEAVE, &pointerLeave },
-		{ PointerEventArgs::POINTER_SCROLL, &pointerScroll },
-
-		{ PointerEventArgs::GOT_POINTER_CAPTURE, &gotPointerCapture },
-		{ PointerEventArgs::LOST_POINTER_CAPTURE, &lostPointerCapture },
 
 		{ KeyboardUIEventArgs::KEY_DOWN, &keyDown },
 		{ KeyboardUIEventArgs::KEY_UP, &keyUp }

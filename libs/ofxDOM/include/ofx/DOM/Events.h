@@ -31,7 +31,6 @@
 #include <utility>
 #include <ctime>
 #include "ofEvents.h"
-#include "ofx/PointerEvents.h"
 #include "ofx/DOM/Exceptions.h"
 #include "ofx/DOM/Types.h"
 
@@ -233,51 +232,6 @@ public:
 	virtual ~UIEventArgs()
 	{
 	}
-
-};
-
-
-class PointerCaptureUIEventArgs: public UIEventArgs
-{
-public:
-	PointerCaptureUIEventArgs(std::size_t id,
-							  bool wasCaptured,
-							  Element* source,
-							  Element* target);
-
-	virtual ~PointerCaptureUIEventArgs();
-
-	/// \returns the pointer id.
-	std::size_t id() const;
-
-private:
-	/// \brief The pointer id.
-	std::size_t _id;
-
-};
-
-
-class PointerUIEventArgs: public UIEventArgs
-{
-public:
-	PointerUIEventArgs(const PointerEventArgs& args,
-					   Element* source,
-					   Element* target,
-					   Element* relatedTarget = nullptr);
-
-	virtual ~PointerUIEventArgs();
-
-	const PointerEventArgs& pointer() const;
-
-	Position screenPosition() const;
-
-	Position localPosition() const;
-
-protected:
-	static bool eventBubbles(const std::string& event);
-	static bool eventCancelable(const std::string& event);
-
-	PointerEventArgs _pointer;
 
 };
 

@@ -27,7 +27,6 @@
 
 
 #include <unordered_set>
-#include "ofx/PointerEvents.h"
 #include "ofx/DOM/CapturedPointer.h"
 #include "ofx/DOM/Events.h"
 #include "ofx/DOM/EventTarget.h"
@@ -552,43 +551,8 @@ protected:
 	/// \returns An iterator pointing to the matching Element or the end.
 	std::vector<std::unique_ptr<Element>>::iterator findChild(Element* element);
 
-	/// \brief Determine if a given pointer id is captured.
-	/// \param id The pointer id to test.
-	/// \returns true if the given pointer id is captured.
-	bool isPointerCaptured(std::size_t id) const;
-
-	/// \brief Find the given CapturePointer info by id.
-	/// \param id The pointer id to find.
-	/// \returns An const iterator to the CapturedPointer info if found.
-	std::vector<CapturedPointer>::iterator findCapturedPointerById(std::size_t id);
-
-	/// \brief Find the given CapturePointer info by id.
-	/// \param id The pointer id to find.
-	/// \returns An const iterator to the CapturedPointer info if found.
-	std::vector<CapturedPointer>::const_iterator findCapturedPointerById(std::size_t id) const;
-
-	/// \brief Get a reference to the captured pointer vector.
-	/// \returns a reference to all pointers captured by this Element.
-	std::vector<CapturedPointer>& capturedPointers();
-
-	/// \brief Get a reference to the captured pointer vector.
-	/// \returns a reference to all pointers captured by this Element.
-	const std::vector<CapturedPointer>& capturedPointers() const;
-
 	/// \brief Called internally to invalidate the child shape tree.
 	virtual void invalidateChildShape() const;
-
-	/// \brief Set if the pointer is implicitly captured on pointer down.
-	///
-	/// This does not enable the pointer listener, only if the pointer should
-	/// be automatically captured when a listener is enabled.
-	///
-	/// \param implicitPointerCapture True if the pointer should be captured.
-	void setImplicitPointerCapture(bool implicitPointerCapture);
-
-	/// \brief Determine if pointer is automatically captured on pointer down.
-	/// \returns true iff implicit pointer capture is enabled.
-	bool getImplicitPointerCapture() const;
 
 	/// \brief A vector to Elements.
 	std::vector<std::unique_ptr<Element>> _children;
@@ -645,16 +609,8 @@ private:
 	/// \todo This may not be permanent.
 	std::unordered_map<std::string, Any> _attributes;
 
-	/// \brief Automatically capture the pointer on pointer down.
-	bool _implicitPointerCapture = false;
-
 	/// \brief True if content drawn by render() needs to be regenerated
 	bool needsRedraw;
-
-	/// \brief A list of the pointer ids currently captured by this Element.
-	/// Captured pointers are pushed back, so the pointer at the front was the
-	/// first pointer captured, and thus the primary pointer.
-	std::vector<CapturedPointer> _capturedPointers;
 
 	/// \brief The Layout associated with this
 	std::unique_ptr<Layout> _layout = nullptr;

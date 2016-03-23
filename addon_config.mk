@@ -5,5 +5,3 @@ meta:
 	ADDON_TAGS = "UI" "events" "DOM"
 	ADDON_URL = http://github.com/bakercp/ofxDOM
 
-common:
-	ADDON_DEPENDENCIES = ofxPointer

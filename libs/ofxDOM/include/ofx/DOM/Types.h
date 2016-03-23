@@ -41,7 +41,6 @@ namespace DOM {
 
 
 class Element;
-class PointerEvent;
 
 
 typedef ofPoint Position;

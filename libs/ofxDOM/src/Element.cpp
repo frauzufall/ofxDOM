@@ -876,36 +876,6 @@ Element* Element::recursiveHitTest(const Position& parentPosition)
 }
 
 
-void Element::setPointerCapture(std::size_t id)
-{
-	Document* _document = document();
-
-	if (_document)
-	{
-		_document->setPointerCaptureForElement(this, id);
-	}
-	else
-	{
-		throw DOMException(DOMException::INVALID_STATE_ERROR + ": " + "Element::setPointerCapture");
-	}
-}
-
-
-void Element::releasePointerCapture(std::size_t id)
-{
-	Document* _document = document();
-
-	if (_document)
-	{
-		_document->releasePointerCaptureForElement(this, id);
-	}
-	else
-	{
-		throw DOMException(DOMException::INVALID_STATE_ERROR + ": Element::releasePointerCapture");
-	}
-}
-
-
 bool Element::isEnabled() const
 {
 	return _enabled;
@@ -967,53 +937,6 @@ void Element::invalidateChildShape() const
 	}
 }
 
-
-bool Element::isPointerCaptured(std::size_t id) const
-{
-	return findCapturedPointerById(id) != _capturedPointers.end();
-}
-
-
-std::vector<CapturedPointer>::iterator Element::findCapturedPointerById(std::size_t id)
-{
-	return std::find_if(_capturedPointers.begin(),
-						_capturedPointers.end(),
-						[id](const CapturedPointer& pointer)
-						{
-							return id == pointer.id();
-						});
-}
-
-
-
-std::vector<CapturedPointer>::const_iterator Element::findCapturedPointerById(std::size_t id) const
-{
-	return findCapturedPointerById(id);
-}
-
-
-std::vector<CapturedPointer>& Element::capturedPointers()
-{
-	return _capturedPointers;
-}
-
-
-const std::vector<CapturedPointer>& Element::capturedPointers() const
-{
-	return _capturedPointers;
-}
-
-
-void Element::setImplicitPointerCapture(bool implicitPointerCapture)
-{
-	_implicitPointerCapture = implicitPointerCapture;
-}
-
-
-bool Element::getImplicitPointerCapture() const
-{
-	return _implicitPointerCapture;
-}
 
 void Element::_onMoved(MoveEventArgs&)
 {
